@@ -2,6 +2,8 @@
 
 This project simulates a **UR5 robotic arm** performing a **pick and place** operation using **ROS 2**, **Gazebo**, and **MoveIt 2**. The robot can plan and execute motion to pick up an object and place it at a designated location.
 
+![UR5 Pick and Place Simulation](./images/demo.png) 
+
 ## Features
 
 * Simulated UR5 robot in Gazebo
