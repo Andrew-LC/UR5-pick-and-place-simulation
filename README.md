@@ -1,7 +1,3 @@
-# Here’s a simple and clear `README.md` for your UR5 Pick and Place simulation project:
-
----
-
 # UR5 Pick and Place Simulation
 
 This project simulates a **UR5 robotic arm** performing a **pick and place** operation using **ROS 2**, **Gazebo**, and **MoveIt 2**. The robot can plan and execute motion to pick up an object and place it at a designated location.
