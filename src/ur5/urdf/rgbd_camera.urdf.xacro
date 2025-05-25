@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+
+  <xacro:macro name="rgbd_camera" params="
+    prefix:=''
+    camera_name:='rs_front'
+    parent:='wrist_3_link'
+    mesh_file:='' 
+    xyz_offset:='0.122 0 0.257'
+    rpy_offset:='0 0.46 0'
+    cam_width:=0.090
+    cam_height:=0.025
+    cam_depth:=0.025
+    mass:=0.072
+    ixx:=0.003881243
+    ixy:=0.0
+    ixz:=0.0
+    iyy:=0.000498940
+    iyz:=0.0
+    izz:=0.003879257
+    material_name:='gray'
+    material_color:='0.5 0.5 0.5 1'
+    horizontal_fov:=1.50098
+    image_width:=640
+    image_height:=360
+    fx:=343.159
+    fy:=343.159
+    cx:=319.5
+    cy:=179.5
+    s:=0.0
+    k1:=0.0
+    k2:=0.0
+    k3:=0.0
+    p1:=0.0
+    p2:=0.0
+    rgb_clip_near:=0.01
+    rgb_clip_far:=300
+    depth_clip_near:=0.1
+    depth_clip_far:=10
+    update_rate:=30
+    always_on:=1
+    visualize:=true
+    enable_collision:=false
+    noise_mean:=0
+    noise_stddev:=0.007">
+
+    <link name="${prefix}${camera_name}_link">
+      <!-- Visual element -->
+      <xacro:if value="${mesh_file != ''}">
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="${mesh_file}" />
+          </geometry>
+          <material name="${material_name}">
+            <color rgba="${material_color}"/>
+          </material>
+        </visual>
+      </xacro:if>
+
+      <!-- Collision element -->
+      <xacro:if value="${enable_collision}">
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <xacro:if value="${mesh_file != ''}">
+              <mesh filename="${mesh_file}"/>
+            </xacro:if>
+            <xacro:unless value="${mesh_file != ''}">
+              <box size="${cam_width} ${cam_height} ${cam_depth}"/>
+            </xacro:unless>
+          </geometry>
+        </collision>
+      </xacro:if>
+
+      <!-- Inertial properties -->
+      <inertial>
+        <mass value="${mass}" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}"
+                 iyy="${iyy}" iyz="${iyz}" izz="${izz}" />
+      </inertial>
+    </link>
+
+    <joint name="${prefix}${camera_name}_joint" type="fixed">
+      <parent link="${parent}" />
+      <child link="${prefix}${camera_name}_link" />
+      <origin xyz="${xyz_offset}" rpy="${rpy_offset}" />
+    </joint>
+
+    <gazebo reference="${prefix}${camera_name}_link">
+      <sensor name="${prefix}${camera_name}" type="rgbd_camera">
+        <pose>0 0 0 0 0 0</pose>
+        <always_on>${always_on}</always_on>
+        <update_rate>${update_rate}</update_rate>
+        <visualize>${visualize}</visualize>
+	<topic>${camera_name}</topic>
+        <camera name="${prefix}${camera_name}">
+          <horizontal_fov>${horizontal_fov}</horizontal_fov>
+          <lens>
+            <intrinsics>
+              <fx>${fx}</fx>
+              <fy>${fy}</fy>
+              <cx>${cx}</cx>
+              <cy>${cy}</cy>
+              <s>${s}</s>
+            </intrinsics>
+          </lens>
+          <distortion>
+            <k1>${k1}</k1>
+            <k2>${k2}</k2>
+            <k3>${k3}</k3>
+            <p1>${p1}</p1>
+            <p2>${p2}</p2>
+            <center>0.5 0.5</center>
+          </distortion>
+          <image>
+            <width>${image_width}</width>
+            <height>${image_height}</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>${rgb_clip_near}</near>
+            <far>${rgb_clip_far}</far>
+          </clip>
+          <depth_camera>
+            <clip>
+              <near>${depth_clip_near}</near>
+              <far>${depth_clip_far}</far>
+            </clip>
+          </depth_camera>
+          <noise>
+            <type>gaussian</type>
+            <mean>${noise_mean}</mean>
+            <stddev>${noise_stddev}</stddev>
+          </noise>
+        </camera>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

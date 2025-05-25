@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: ur5
+    relative_path: urdf/ur5.urdf.xacro
+  srdf:
+    relative_path: config/ur.srdf
+  package_settings:
+    author_name: Andrew LC
+    author_email: smartandrew2003@gmail.com
+    generated_timestamp: 1748097322
