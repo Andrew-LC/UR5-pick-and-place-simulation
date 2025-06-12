@@ -10,34 +10,41 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="Manipulator">
-        <link name="base_link"/>
-        <link name="shoulder_link"/>
-        <link name="upper_arm_link"/>
-        <link name="forearm_link"/>
-        <link name="wrist_1_link"/>
-        <link name="wrist_2_link"/>
-        <link name="wrist_3_link"/>
-        <joint name="base_joint"/>
-        <joint name="shoulder_pan_joint"/>
-        <joint name="shoulder_lift_joint"/>
-        <joint name="elbow_joint"/>
-        <joint name="wrist_1_joint"/>
-        <joint name="wrist_2_joint"/>
-        <joint name="wrist_3_joint"/>
+        <!-- <link name="base_link"/> -->
+        <!-- <link name="shoulder_link"/> -->
+        <!-- <link name="upper_arm_link"/> -->
+        <!-- <link name="forearm_link"/> -->
+        <!-- <link name="wrist_1_link"/> -->
+        <!-- <link name="wrist_2_link"/> -->
+        <!-- <link name="wrist_3_link"/> -->
+        <!-- <joint name="base_joint"/> -->
+        <!-- <joint name="shoulder_pan_joint"/> -->
+        <!-- <joint name="shoulder_lift_joint"/> -->
+        <!-- <joint name="elbow_joint"/> -->
+        <!-- <joint name="wrist_1_joint"/> -->
+        <!-- <joint name="wrist_2_joint"/> -->
+        <!-- <joint name="wrist_3_joint"/> -->
         <chain base_link="base_link" tip_link="tool0"/>
     </group>
     <group name="gripper">
-        <link name="robotiq_85_base_link"/>
-        <link name="robotiq_85_left_inner_knuckle_link"/>
-        <link name="robotiq_85_left_finger_tip_link"/>
-        <link name="robotiq_85_left_knuckle_link"/>
-        <link name="robotiq_85_left_finger_link"/>
-        <link name="robotiq_85_right_inner_knuckle_link"/>
-        <link name="robotiq_85_right_finger_tip_link"/>
-        <link name="robotiq_85_right_knuckle_link"/>
-        <link name="robotiq_85_right_finger_link"/>
-        <joint name="robotiq_85_left_knuckle_joint"/>
+      <link name="tool0"/>
+      <link name="robotiq_85_base_link"/>
+      <link name="robotiq_85_left_inner_knuckle_link"/>
+      <link name="robotiq_85_left_finger_tip_link"/>
+      <link name="robotiq_85_left_knuckle_link"/>
+      <link name="robotiq_85_left_finger_link"/>
+      <link name="robotiq_85_right_inner_knuckle_link"/>
+      <link name="robotiq_85_right_finger_tip_link"/>
+      <link name="robotiq_85_right_knuckle_link"/>
+      <link name="robotiq_85_right_finger_link"/>
+      <joint name="robotiq_85_left_knuckle_joint"/>
     </group>
+    <group_state name="Open" group="gripper">
+      <joint name="robotiq_85_left_knuckle_joint" value="0"/>
+    </group_state>
+    <group_state name="Close" group="gripper">
+      <joint name="robotiq_85_left_knuckle_joint" value="0.8"/>
+    </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="gripper" parent_link="tool0" group="gripper"/>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->

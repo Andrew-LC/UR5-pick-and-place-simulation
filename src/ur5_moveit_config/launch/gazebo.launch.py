@@ -9,6 +9,7 @@ from ament_index_python.packages import get_package_share_directory
 import xacro
 import os
 
+
 def generate_launch_description():
     # Package directories
     ur5_controller_dir = FindPackageShare('ur5_moveit_config')
@@ -19,6 +20,7 @@ def generate_launch_description():
     world_path = os.path.join(get_package_share_directory('ur5') + '/world' + '/my_world.sdf')
     bridge_config_path = PathJoinSubstitution([ur5_controller_dir, 'config', 'bridge_config.yaml'])
     urdf_path = PathJoinSubstitution([ur5_controller_dir, 'config', 'ur.urdf.xacro'])
+    camera_path = os.path.join(get_package_share_directory('ur5') + '/urdf/' + 'camera.urdf')
     controller_config_path = PathJoinSubstitution([ur5_controller_dir, 'config', 'ros2_controllers.yaml'])
 
     # Process URDF from Xacro
@@ -58,12 +60,50 @@ def generate_launch_description():
         output='screen'
     )
 
+    spawn_camera = Node(
+        package='ros_gz_sim',
+        executable='create',
+        arguments=[
+            '-file', str(camera_path),
+            '-name', 'static_camera',
+        ],
+        output='screen'
+    )
+
+    # TODO:
+    # ros2 run tf2_ros static_transform_publisher --x 0.4 --y 0 --z 1.0 --qx 0 --qy 0.7 --qz 0 --qw 0.7 --frame-id world --child-frame-id static_camera/camera_link/depth_camera
+
+    camera_static = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        arguments=[
+            '--x', '0.4',
+            '--y', '-0.2',
+            '--z', '0.7',
+            '--qx', '0',
+            '--qy', '0.7',
+            '--qz', '0',
+            '--qw', '0.7',
+            '--frame-id', 'world',
+            '--child-frame-id', 'static_camera/camera_link/depth_camera'
+        ]
+    )
+
     # ROS-Gazebo bridge
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         parameters=[{'config_file': bridge_config_path}],
         output='screen'
+    )
+
+    camera_bridge_depth = Node(
+        package='ros_gz_image',
+        executable='image_bridge',
+        name='bridge_gz_ros_camera_depth',
+        output='screen',
+        parameters=[{'use_sim_time': True}],
+        arguments=['/depth_camera/depth_image'],
     )
 
     joint_state_broadcaster_spawner = Node(
@@ -103,4 +143,7 @@ def generate_launch_description():
         gripper_controller_spawner,
         bridge,
         spawn_entity,
+        spawn_camera,
+        camera_bridge_depth,
+        camera_static,
     ])
